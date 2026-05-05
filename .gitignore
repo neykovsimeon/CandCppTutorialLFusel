@@ -1,5 +1,12 @@
-# Ignore all intermittent and binary files
+# Exclude visual studio directory
+/.vs
+
+# Exclude visual studio build directory
+/build
+
+# Ignore all visual studio code structured intermittent and binary files
 *.exe
 *.obj
+
 # Ignore not project relevant files
 *.png

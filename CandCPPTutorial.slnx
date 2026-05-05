@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="01_VS_SimpleCApp/01_VS_SimpleCApp.vcxproj" Id="2a2a3dbe-9a8d-4d8e-8b1c-830d5a116ce9" />
+</Solution>
