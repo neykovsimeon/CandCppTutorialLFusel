@@ -1,0 +1,5 @@
+# Ignore all intermittent and binary files
+*.exe
+*.obj
+# Ignore not project relevant files
+*.png
