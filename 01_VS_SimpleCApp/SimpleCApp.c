@@ -23,7 +23,7 @@ int main()
     //printf("\nOutput the result f(x) --> f(%d) =  %d\n", x, y1);
     //printf("Output the result f(2x) --> f(%i) =  %i\n", 2*x, y2);
     //printf("Output the result f(3x) --> f(%i) =  %i\n", 3*x, y3);
-    print_fx(1  *x, y1);
+    print_fx(1 * x, y1);
     print_fx(2 * x, y2);
     print_fx(3 * x, y3);
     print_fx(4 * x, y4);
