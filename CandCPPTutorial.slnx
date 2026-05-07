@@ -4,4 +4,5 @@
     <Platform Name="x86" />
   </Configurations>
   <Project Path="01_VS_SimpleCApp/01_VS_SimpleCApp.vcxproj" Id="2a2a3dbe-9a8d-4d8e-8b1c-830d5a116ce9" />
+  <Project Path="Exercises/E01_Functions/E01_Functions.vcxproj" Id="07a13779-8c95-436e-a844-22502edbf55b" />
 </Solution>
