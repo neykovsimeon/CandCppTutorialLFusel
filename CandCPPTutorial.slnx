@@ -4,6 +4,7 @@
     <Platform Name="x86" />
   </Configurations>
   <Project Path="01_VS_SimpleCApp/01_VS_SimpleCApp.vcxproj" Id="2a2a3dbe-9a8d-4d8e-8b1c-830d5a116ce9" />
+  <Project Path="02_02_PointersAndStructs/02_02_PointersAndStructs.vcxproj" Id="804275da-53c7-460a-8c46-7ad368e48f18" />
   <Project Path="02_Pointers/02_Pointers.vcxproj" Id="986a1c12-b15c-4d65-9af0-cac3cb411351" />
   <Project Path="Exercises/E01_Functions/E01_Functions.vcxproj" Id="07a13779-8c95-436e-a844-22502edbf55b" />
 </Solution>
