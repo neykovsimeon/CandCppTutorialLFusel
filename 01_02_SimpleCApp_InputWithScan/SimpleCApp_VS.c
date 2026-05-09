@@ -78,6 +78,6 @@ void Exec_ProcessAndOutput(int32_t x, int32_t count)
         // this could me entirely removed from the executable code. TODO: Learn more about these effects.
  
         // (O) Output
-        //print_fx(i * x, y, i);
+        print_fx(i * x, y, i);
     }
 }
