@@ -36,7 +36,7 @@
   */
 //uint16_t CountBits(uint16_t value);
 int32_t GetSerialStatus();
-void SerialSentStatusAnalizer(static int32_t status);
+void SerialSentStatusAnalizer(int32_t status);
 uint16_t CountSetBits_PopulationCount(uint16_t value);
 uint16_t CountSetBits(uint16_t value);
 void SerialBegin();

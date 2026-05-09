@@ -19,7 +19,7 @@ int32_t GetSerialStatus()
     return serial_status;
 }
 
-void SerialSentStatusAnalizer(static int32_t status)
+void SerialSentStatusAnalizer(int32_t status)
 {
     printf("serial_status = %i \n", status);
     if (status == -1)
