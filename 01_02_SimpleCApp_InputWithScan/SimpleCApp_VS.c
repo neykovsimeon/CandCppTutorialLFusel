@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 int32_t f(int32_t x);
-int scan_int_inputs(int32_t* input);
+int scan_int_inputs(int32_t* input, const char* userMessage);
 
 void Exec_ProcessAndOutput(int32_t x, int32_t count);
 void print_fx(int32_t x, int32_t y, int32_t count);
@@ -12,8 +12,10 @@ int main()
     // Play with IPO model: (I)nput, (P)rocess, (O)utput
     // (I) Proper input from user
     int32_t x, count;
-    int retValue_x      = scan_int_inputs(&x);
-    int retValue_count  = scan_int_inputs(&count);
+    const char* userMessage = "Please enter integer value for x: ";
+    int retValue_x      = scan_int_inputs(&x, userMessage);
+    userMessage = "Please enter integer value for count <=255: ";
+    int retValue_count  = scan_int_inputs(&count, userMessage);
 
     // (P) Process the input; f(x), f(2x), f(3x), f(x) = x * x + 5 * x + 5;
     // (O) Output the result
@@ -42,10 +44,10 @@ int32_t f(int32_t x)
     return x * x + 5 * x + 5;
 }
 
-int scan_int_inputs(int32_t* input) // we will return the return value from scanf_s, while the user input will be an argument
+int scan_int_inputs(int32_t* input, const char* userMessage) // we will return the return value from scanf_s, while the user input will be an argument
 {
     // stops and waits for user's keyboard input for a number and press Enter
-    printf("Enter the integer value: ");
+    printf(userMessage);
     // In case of correct input scanf_s should return 1 (one integer argument expected to be assigned)
     return scanf_s("%i", input);    // scanf -> scanf_s -> windows only behavior. TODO: learn more about it.
 }
@@ -57,27 +59,24 @@ void print_fx(int32_t x, int32_t y, int32_t count)
 
 void Exec_ProcessAndOutput(int32_t x, int32_t count)
 {
-    // Implementation with while loop
-    //int32_t i = 1;
-    //while (i <= count)
-    //{
-    //    // (P) Process
-    //    int32_t y = f(i * x);
-    //    // (O) Output
-    //    print_fx(i * x, y, i);
+    // Implementation with array concept
+    int32_t y_value[255]; // value indexes from 0 to 254
 
-    //    i++;
-    //}
+    if (count > 255)
+    {
+        count = 255;
+        printf("\nThe count has been limited to 255!\n");
+    }
 
-    // Implementation with for loop, preferred
+    // (P) Process
+    for (int32_t i = 1; i <= count; i++)
+    {        
+        y_value[i - 1] = f(i * x);
+    }
+
+    // (O) Output
     for (int32_t i = 1; i <= count; i++)
     {
-        // (P) Process
-        int32_t y = f(i * x);
-        // Var y is not used anywhere exept the pintf_fx below. In Release Mode and compiler code optimization
-        // this could me entirely removed from the executable code. TODO: Learn more about these effects.
- 
-        // (O) Output
-        print_fx(i * x, y, i);
+        print_fx(i * x, y_value[i - 1], i);
     }
 }
