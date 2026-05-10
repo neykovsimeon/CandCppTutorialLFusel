@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 int32_t f(int32_t x);
 int scan_int_inputs(int32_t* input, const char* userMessage);
@@ -14,7 +15,7 @@ int main()
     int32_t x, count;
     const char* userMessage = "Please enter integer value for x: ";
     int retValue_x      = scan_int_inputs(&x, userMessage);
-    userMessage = "Please enter integer value for count <=255: ";
+    userMessage = "Please enter integer value for count: ";
     int retValue_count  = scan_int_inputs(&count, userMessage);
 
     // (P) Process the input; f(x), f(2x), f(3x), f(x) = x * x + 5 * x + 5;
@@ -59,24 +60,25 @@ void print_fx(int32_t x, int32_t y, int32_t count)
 
 void Exec_ProcessAndOutput(int32_t x, int32_t count)
 {
-    // Implementation with array concept
-    int32_t y_value[255]; // value indexes from 0 to 254
+    // Implementation with dynamic array concept, malloc and sizeof
+    // Memory allocation for count * size of the (int32_t). Good for C (review for C++)
+    int32_t* y_value = malloc(count * sizeof(int32_t)); 
 
-    if (count > 255)
+    if (y_value) // C -> NULL, C++ -> nullptr, it should be enough to ask simply for if (y_value)
     {
-        count = 255;
-        printf("\nThe count has been limited to 255!\n");
-    }
+        // (P) Process
+        for (int32_t i = 1; i <= count; i++)
+        {
+            y_value[i - 1] = f(i * x);
+        }
 
-    // (P) Process
-    for (int32_t i = 1; i <= count; i++)
-    {        
-        y_value[i - 1] = f(i * x);
-    }
+        // (O) Output
+        for (int32_t i = 1; i <= count; i++)
+        {
+            print_fx(i * x, y_value[i - 1], i);
+        }
 
-    // (O) Output
-    for (int32_t i = 1; i <= count; i++)
-    {
-        print_fx(i * x, y_value[i - 1], i);
+        // Free the memory
+        free(y_value);
     }
 }
