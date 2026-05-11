@@ -1,39 +1,66 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-
+#include <inttypes.h>
 #include <string.h>
 
+uint64_t GetUIDa()
+{
+	// Add static modifier concept
+	static uint64_t id = 0; // id is not being re-initialized each time when the function is invoked.
+	return id++;			// first take the old value and then increment
+}
+
+uint64_t GetUIDb()
+{
+	// Add static modifier concept
+	static uint64_t id = 5; // id is not being re-initialized each time when the function is invoked.
+	return id++;  			// first take the old value and then increment
+}
 
 int main()
 {
-	printf("\n==== Hello from Memory Utilities functions ====\n");
+	printf("\n==== Hello from Memory Utilities, const and static ====\n");
 
-	int32_t arrayA[32];
-	int32_t arrayB[32];
-
-	// Init arrays
-	// arrayA init with unique values for each element
-	for (int32_t i = 0; i < 32; i++)
+	for (uint64_t i = 0; i < 64; i++)
 	{
-		arrayA[i] = i * 11;
+		uint64_t uida = GetUIDa();
+		uint64_t uidb = GetUIDb();
+		//printf("UID = %llu\n", uid);
+		printf("UIDa = %"PRIu64" & UIDb = %"PRIu64"\n", uida, uidb);
 	}
-	// arrayB init with memset() with the same value -1 for all elements
-	memset(arrayB, 0xFF, 32 * sizeof(int32_t)); // 0xFF would represent -1 in 2's complement and will fill-up whole bit range of int32_t
 
-	// compare arrays before copy
-	// memcomp return value: 0 if equal, -1 if not equal
-	// abEqual = 1 (true) if memcmp return value is 0 (equal)
-	// abEqual = 0 (false) if memcmp return value is not 0 (not equal)
-	int32_t abEqual = memcmp(arrayA, arrayB, 32 * sizeof(int32_t)) == 0;
-	printf("\nArrays equal bevore copy (1 for equal, 0 for not equal): %i \n", abEqual);
+	const int32_t count = 32;
+	const int32_t size = count * sizeof(int32_t);
 
-	// Copy arrays
-	memcpy(arrayB, arrayA, 32 * sizeof(int32_t)); // arguments: source, destination, size
+	int32_t* const arrayA = malloc(size); // the ptr to the 1st element is const, it is not that the element itself is made const
+	int32_t* const arrayB = malloc(size); // the ptr to the 1st element is const, it is not that the element itself is made const
 
-	// compare arrays after copy
-	abEqual = memcmp(arrayA, arrayB, 32 * sizeof(int32_t)) == 0;
-	printf("\nArrays equal bevore copy (1 for equal, 0 for not equal): %i \n", abEqual);
+	if (arrayA && arrayB)
+	{
+		// Init arrays
+		for (int32_t i = 0; i < count; i++)
+		{
+			arrayA[i] = i * 11;
+		}
+		// arrayB init with memset() with the same value -1 for all elements
+		memset(arrayB, 0xFF, size);
+
+		// compare arrays before copy
+		int32_t abEqual = memcmp(arrayA, arrayB, size) == 0;
+		printf("\nArrays equal bevore copy (1 for equal, 0 for not equal): %i \n", abEqual);
+
+		// Copy arrays
+		memcpy(arrayB, arrayA, size); // arguments: source, destination, size
+
+		// compare arrays after copy
+		abEqual = memcmp(arrayA, arrayB, size) == 0;
+		printf("\nArrays equal bevore copy (1 for equal, 0 for not equal): %i \n", abEqual);
+	}
+
+	// Free allocated memory
+	if (arrayA) free(arrayA);
+	if (arrayB) free(arrayB);
 
 	return 0;
 }
