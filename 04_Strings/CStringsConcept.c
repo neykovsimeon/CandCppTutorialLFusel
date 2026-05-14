@@ -190,7 +190,7 @@ void parseIni(const char* iniData)
 		}
 		else if (state == 7)
 		{
-			if (*c == '\n') state == 0;
+			if (*c == '\n') state = 0;
 		}
 		//printf(" '%c' ", *c);
 	}
