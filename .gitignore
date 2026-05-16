@@ -3,6 +3,10 @@
 
 # Exclude visual studio build directory
 /build
+/x64
+/x86
+/Exercises/E01_Functions/x64
+/Exercises/E01_Functions/x86
 
 # Ignore all visual studio code structured intermittent and binary files
 *.exe
