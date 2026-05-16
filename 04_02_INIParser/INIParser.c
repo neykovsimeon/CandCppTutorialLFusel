@@ -6,7 +6,7 @@
 
 #include "INIParser.h"
 
-void ini_parseINIFromFile(const char* filePath)
+void ini_parseINIFromFile(const char* filePath, const char* logfilePath)
 {
 	FILE* my_file = NULL;
 	fopen_s(&my_file, filePath, "rb");				// Mode specified to read-binary
@@ -27,7 +27,7 @@ void ini_parseINIFromFile(const char* filePath)
 			{
 				// Read success
 				fileContent[fileSize] = '\0';		// Insert the NULL terminator at the end of the buffer with the file content taken with fread()
-				ini_parseINI(fileContent);
+				ini_parseINI(fileContent, logfilePath);
 			}
 			free(fileContent);
 		}
@@ -37,11 +37,15 @@ void ini_parseINIFromFile(const char* filePath)
 }
 
 /****************************************************************************************************************************/
-void ini_parseINI(const char* iniData)
+void ini_parseINI(const char* iniData, const char* logfilePath)
 {
 	// Handle a parser-log file here
 	FILE* my_parser_log = NULL;
-	fopen_s(&my_parser_log, "./ini_parser.log", "wb");  // Always will create it and if existed - with re-write 
+	if (logfilePath)
+	{
+		fopen_s(&my_parser_log, logfilePath, "wb");  // Always will create it and if existed - with re-write 
+	}
+	
 
 
 	// Working buffer to collect INI component data
