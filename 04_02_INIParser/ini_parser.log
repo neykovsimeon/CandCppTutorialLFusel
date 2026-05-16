@@ -1,0 +1,5 @@
+Section = "owner"; KeyName = "name"; KeyValue = "John Doe";
+Section = "owner"; KeyName = "organization"; KeyValue = "Acme Widgets Inc.";
+Section = "database"; KeyName = "server"; KeyValue = "192.0.2.62";
+Section = "database"; KeyName = "port"; KeyValue = "143";
+Section = "database"; KeyName = "file"; KeyValue = ""payroll.dat"";

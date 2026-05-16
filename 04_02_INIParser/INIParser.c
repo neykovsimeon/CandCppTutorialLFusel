@@ -2,12 +2,48 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "INIParser.h"
 
-/****************************************************************************************************************************/
-void ini_parseIni(const char* iniData)
+void ini_parseINIFromFile(const char* filePath)
 {
+	FILE* my_file = NULL;
+	fopen_s(&my_file, filePath, "rb");				// Mode specified to read-binary
+	if (my_file)
+	{
+		// Open file for reading
+		// Use fseek and ftell for taking the file size uning file position indicator
+		size_t fileSize = 0;
+		fseek(my_file, 0, SEEK_END);				// Go to the file end
+		fileSize = ftell(my_file);					// Tell what is the current position. Since we moved to the file end, it will represent the file size
+		//fseek(my_file, 0, SEEK_SET);				// Return back to the beginning of the file to perform the actual read below
+		rewind(my_file);							// Alternative method  to return back to the beginning of the file to perform the actual read below
+		char* fileContent = malloc(fileSize + 1);	// Have to insert manualy and '\0' end of file terminator, this is why we extend the file size here
+		if (fileContent)
+		{
+			// the whole file as one element, this one element contains the whole file in binary
+			if (fread(fileContent, fileSize, 1, my_file) == 1)
+			{
+				// Read success
+				fileContent[fileSize] = '\0';		// Insert the NULL terminator at the end of the buffer with the file content taken with fread()
+				ini_parseINI(fileContent);
+			}
+			free(fileContent);
+		}
+		fclose(my_file);
+	}
+
+}
+
+/****************************************************************************************************************************/
+void ini_parseINI(const char* iniData)
+{
+	// Handle a parser-log file here
+	FILE* my_parser_log = NULL;
+	fopen_s(&my_parser_log, "./ini_parser.log", "wb");  // Always will create it and if existed - with re-write 
+
+
 	// Working buffer to collect INI component data
 	char buffer[256];
 	*buffer = '\0';
@@ -44,6 +80,7 @@ void ini_parseIni(const char* iniData)
 			switch (*c)
 			{
 			case ';':	// Start comment
+			case '#':
 				state = 1;
 				break;
 			case '[':	// Start section name
@@ -146,6 +183,25 @@ void ini_parseIni(const char* iniData)
 
 				// Report the result
 				printf("Propertie: \"%s/%s\": \"%s\"\n", currentSection, currentKeyName, currentKeyValue);
+				if (my_parser_log)
+				{
+					// Variant 1
+					//char logBuffer[1024];
+					//*logBuffer = '\0';
+					//strcat_s(logBuffer, 1024, "Propertie \"");
+					//strcat_s(logBuffer, 1024, currentSection);
+					//strcat_s(logBuffer, 1024, "\" KeyName =\"");
+					//strcat_s(logBuffer, 1024, currentKeyName);
+					//strcat_s(logBuffer, 1024, "\" KeyValue =\"");
+					//strcat_s(logBuffer, 1024, currentKeyValue);
+					//strcat_s(logBuffer, 1024, "\"\n");
+					//size_t logLenght = strlen(logBuffer);
+					//fwrite(logBuffer, logLenght, 1, my_parser_log);
+
+					// Variant 2
+					fprintf_s(my_parser_log, "Section = \"%s\"; KeyName = \"%s\"; KeyValue = \"%s\";\n", currentSection, currentKeyName, currentKeyValue);
+				}
+
 				break;
 			default:
 				ini_appendBuffer(buffer, *c);
@@ -158,6 +214,12 @@ void ini_parseIni(const char* iniData)
 			break;
 		}
 	}
+
+	if (my_parser_log)
+	{
+		fclose(my_parser_log);
+	}
+
 }
 /***************************************************************************************************************************/
 void ini_stripeBuffer(char* buffer)
@@ -172,6 +234,9 @@ void ini_stripeBuffer(char* buffer)
 /****************************************************************************************************************************/
 void ini_appendBuffer(char* buffer, char c)							// Buffer size (256) not checked !
 {
-	char str[2] = { c, '\0' };
-	strcat_s(buffer, 256, str);										// Concatenate: The max buffer size is yet hard coded
+	if (!iscntrl(c))												// Windows control characters we don't want to append
+	{
+		char str[2] = { c, '\0' };
+		strcat_s(buffer, 256, str);									// Concatenate: The max buffer size is yet hard coded
+	}
 }
