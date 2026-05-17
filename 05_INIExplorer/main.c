@@ -3,20 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// Example use of preprocessor directives
-//#ifdef _DEBUG
-//#define MY_NAME "Debug Bacinka"
-//#define myGreet(name) printf_s("\nDebug Hello from %s\n\n", name);
-//#define debugOnly(expr) expr
-//#else
-//#define MY_NAME "Bash Bacinka"
-//#define myGreet(name) printf_s("\nHello from %s\n\n", name);
-//#define debugOnly(expr)
-//#endif
-
-//#define INIEXPLORER_DEFAULT_FORMAT1
-//#define INIEXPLORER_DEFAULT_FORMAT2
-
 #if defined(INIEXPLORER_DEFAULT_FORMAT1) && !defined(INIEXPLORER_DEFAULT_FORMAT2)
 #define INIEXPLORER_FORMAT_CALLBACK iniDataCallback1
 #elif defined(INIEXPLORER_DEFAULT_FORMAT2) && !defined(INIEXPLORER_DEFAULT_FORMAT1)
@@ -32,7 +18,7 @@ void iniDataCallback2(const char* section, const char* key_name, const char* key
 /*******************************************************************************************************************************************************/
 int main(int argc, char** argv)				// argc -> arguments count; argv -> arguments values: aray of count argc
 {
-	printf("\n=== Hello from INI parser! Preprocessor intro ===\n\n");
+	printf("\n=== Hello from INI parser! DLL intro - windows specific ===\n\n");
 
 	// Example use of preprocessor directives
 	//myGreet(MY_NAME);

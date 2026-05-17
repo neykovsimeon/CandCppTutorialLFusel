@@ -23,5 +23,8 @@
     <ClInclude Include="INIParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="INIParser_API.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

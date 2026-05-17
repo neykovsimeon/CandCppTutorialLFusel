@@ -1,10 +1,10 @@
+#include "INIParser.h"
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-
-#include "INIParser.h"
 
 void ini_parseINIFromFile(const char* filePath, const char* logfilePath, ini_callback callback)
 {
