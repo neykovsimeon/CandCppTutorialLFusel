@@ -6,7 +6,7 @@
 
 #include "INIParser.h"
 
-void ini_parseINIFromFile(const char* filePath, const char* logfilePath)
+void ini_parseINIFromFile(const char* filePath, const char* logfilePath, ini_callback callback)
 {
 	FILE* my_file = NULL;
 	fopen_s(&my_file, filePath, "rb");				// Mode specified to read-binary
@@ -27,7 +27,7 @@ void ini_parseINIFromFile(const char* filePath, const char* logfilePath)
 			{
 				// Read success
 				fileContent[fileSize] = '\0';		// Insert the NULL terminator at the end of the buffer with the file content taken with fread()
-				ini_parseINI(fileContent, logfilePath);
+				ini_parseINI(fileContent, logfilePath, callback);
 			}
 			free(fileContent);
 		}
@@ -37,7 +37,7 @@ void ini_parseINIFromFile(const char* filePath, const char* logfilePath)
 }
 
 /****************************************************************************************************************************/
-void ini_parseINI(const char* iniData, const char* logfilePath)
+void ini_parseINI(const char* iniData, const char* logfilePath, ini_callback callback)
 {
 	// Handle a parser-log file here
 	FILE* my_parser_log = NULL;
@@ -185,24 +185,11 @@ void ini_parseINI(const char* iniData, const char* logfilePath)
 				*buffer = '\0';								// Clear the buffer
 				state = 0;
 
-				// Report the result
-				printf("Propertie: \"%s/%s\": \"%s\"\n", currentSection, currentKeyName, currentKeyValue);
+				// Report the result, introduce callback, define report format out-side of the parser itself
+				callback(currentSection, currentKeyName, currentKeyValue);
+
 				if (my_parser_log)
 				{
-					// Variant 1
-					//char logBuffer[1024];
-					//*logBuffer = '\0';
-					//strcat_s(logBuffer, 1024, "Propertie \"");
-					//strcat_s(logBuffer, 1024, currentSection);
-					//strcat_s(logBuffer, 1024, "\" KeyName =\"");
-					//strcat_s(logBuffer, 1024, currentKeyName);
-					//strcat_s(logBuffer, 1024, "\" KeyValue =\"");
-					//strcat_s(logBuffer, 1024, currentKeyValue);
-					//strcat_s(logBuffer, 1024, "\"\n");
-					//size_t logLenght = strlen(logBuffer);
-					//fwrite(logBuffer, logLenght, 1, my_parser_log);
-
-					// Variant 2
 					fprintf_s(my_parser_log, "Section = \"%s\"; KeyName = \"%s\"; KeyValue = \"%s\";\n", currentSection, currentKeyName, currentKeyValue);
 				}
 

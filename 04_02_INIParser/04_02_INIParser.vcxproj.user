@@ -14,7 +14,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommandArguments>my_config.ini my_ini_parser.log</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArgumentsHistory>my_config.ini|my_config.ini ini_parser.log|my_config.ini my_ini_parser.log|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArgumentsHistory>my_config.ini ini_parser.log|my_config.ini 2 my_ini_parser.log|my_config.ini 1 my_ini_parser.log|my_config.ini 0 my_ini_parser.log|my_config.ini my_ini_parser.log|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>my_config.ini my_ini_parser.log</LocalDebuggerCommandArguments>

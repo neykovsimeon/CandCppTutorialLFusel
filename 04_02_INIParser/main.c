@@ -1,40 +1,63 @@
 #include "INIParser.h"
 
 #include <stdio.h>
+#include <string.h>
+
+void iniDataCallback1(const char* section, const char* key_name, const char* key_value);
+void iniDataCallback2(const char* section, const char* key_name, const char* key_value);
 
 /*******************************************************************************************************************************************************/
 int main(int argc, char** argv)				// argc -> arguments count; argv -> arguments values: aray of count argc
 {
-	printf("\n==== Hello from INI parser! Read INI from a file. Cmd line arguments =====\n\n");
+	printf("\n==== Hello from INI parser! Cmd line arguments. Function pointer =====\n\n");
 
-	// Example variant for getting file name from an user input.
-	//char fileName[256];
-	//printf_s("Please enter the file: ");
-	//scanf_s("%s", fileName, 256);
-	
-	// Command line argument preferred
-	//for (int i = 0; i < argc; i++)
-	//{
-	//	printf_s("%i: %s\n", i, argv[i]);
-	//}
-
-	if (argc < 2 || argc > 3) // pass ini file name as an argument and <optional> log file
+	if (argc < 2 || argc > 4) // pass ini file name as an argument and <optional> report format and log file
 	{
-		printf_s("Usage: INIParser_C [PathToINIFile] <OPTIONAL:PathToLogFile>");
+		printf_s("Usage: INIParser_C [PathToINIFile] <OPTIONLA:ReportFormat(1/2) <OPTIONAL:PathToLogFile>");
 		return -1;
 	}
 
-	// Check logfile path
+	// Simplified checks for the example purpose. Pay attention for <OPTIONAL>
+	// What happens if you omit the output format, but want to specify a log file, etc.
+	// What happens if you want to specify an output format, but want to omit log file, etc
+	// 
+	// Check Report format argument - simplified for example purpose
+	ini_callback callback = iniDataCallback1;			// Set a defualt output report format
+	// Wrong format or NO format specified gives format1, iniDataCallback1
+	// Correct format2 only would returtn iniDataCallback2
+	if (argc >= 3 && strcmp(argv[2], "2") == 0)
+	{
+		callback = iniDataCallback2;					// Set an alternative output report format
+	}
+
+	// Check logfile path - simplified for example purpose
 	const char* logfile = NULL;
-	if (argc >= 3)
+	if (argc >= 4)
+	{
+		logfile = argv[3];
+	}
+	else if (argc >= 3)
 	{
 		logfile = argv[2];
 	}
+	else
+	{
+		printf_s("No INI log file argument specified!");
+	}
 
 	// Parse the ini file
-	ini_parseINIFromFile(argv[1], logfile);				// Relative path 
+	ini_parseINIFromFile(argv[1], logfile, callback); // Introduce function pointer
 
 	return 0;
 }
+/******************************************************************************************************/
+void iniDataCallback1(const char* section, const char* key_name, const char* key_value)
+{
+	printf_s("[%s]\n%s = %s\n\n", section, key_name, key_value);
+}
 
+void iniDataCallback2(const char* section, const char* key_name, const char* key_value)
+{
+	printf_s("%s\\%s is %s\n", section, key_name, key_value);
+}
 
