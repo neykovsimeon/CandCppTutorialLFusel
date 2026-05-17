@@ -1,4 +1,4 @@
-#include "INIParser.h"
+#include <INIParser.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -11,20 +11,14 @@ int main(int argc, char** argv)				// argc -> arguments count; argv -> arguments
 {
 	printf("\n==== Hello from INI parser! Cmd line arguments. Function pointer =====\n\n");
 
-	if (argc < 2 || argc > 4) // pass ini file name as an argument and <optional> report format and log file
+	if (argc < 2 || argc > 4)				// pass ini file name as an argument and <optional> report format and log file
 	{
 		printf_s("Usage: INIParser_C [PathToINIFile] <OPTIONLA:ReportFormat(1/2) <OPTIONAL:PathToLogFile>");
 		return -1;
 	}
 
-	// Simplified checks for the example purpose. Pay attention for <OPTIONAL>
-	// What happens if you omit the output format, but want to specify a log file, etc.
-	// What happens if you want to specify an output format, but want to omit log file, etc
-	// 
-	// Check Report format argument - simplified for example purpose
 	ini_callback callback = iniDataCallback1;			// Set a defualt output report format
-	// Wrong format or NO format specified gives format1, iniDataCallback1
-	// Correct format2 only would returtn iniDataCallback2
+	// Check Report format argument - simplified for example purpose
 	if (argc >= 3 && strcmp(argv[2], "2") == 0)
 	{
 		callback = iniDataCallback2;					// Set an alternative output report format
