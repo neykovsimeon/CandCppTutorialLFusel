@@ -1,4 +1,6 @@
-#include <INIParser.h>
+#include "main.h"
+//#include <INIParser.h>
+#include <INIx.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -11,9 +13,6 @@
 #error Please define ONLY one default format!
 #endif
 
-
-void iniDataCallback1(const char* section, const char* key_name, const char* key_value);
-void iniDataCallback2(const char* section, const char* key_name, const char* key_value);
 
 /*******************************************************************************************************************************************************/
 int main(int argc, char** argv)				// argc -> arguments count; argv -> arguments values: aray of count argc
@@ -62,17 +61,39 @@ int main(int argc, char** argv)				// argc -> arguments count; argv -> arguments
 	}
 
 	// Parse the ini file
-	ini_parseINIFromFile(argv[1], logfile, callback); // Introduce function pointer
+	inix_data* iniData = inix_parseINIFromFile(argv[1], logfile); // Introduce function pointer
+	if (iniData)
+	{
+		int found_owner		= inix_section_exists(iniData, "owner");
+		int found_database	= inix_section_exists(iniData, "database");
+
+		int found_key_name		= inix_key_exists(iniData, "owner", "name");
+		int found_key_server	= inix_key_exists(iniData, "database", "server");
+		int found_key_port		= inix_key_exists(iniData, "database", "port");
+
+		const char* owner_name = inix_get(iniData, "owner", "name");
+		const char* database_server = inix_get(iniData, "database", "server");
+		const char* database_port = inix_get(iniData, "database", "port");
+
+		printf_s("\nOwner's name: %s\n", owner_name);
+		printf_s("Database's server: %s\n", database_server);
+		printf_s("Database's port: %s\n", database_port);
+
+		printf_s("\nClassical SAX parsing follows now....\n");
+		inix_enumerate(iniData, callback, NULL);
+
+		inix_close(iniData);
+	}
 
 	return 0;
 }
 /******************************************************************************************************/
-void iniDataCallback1(const char* section, const char* key_name, const char* key_value)
+void iniDataCallback1(void* userdata, const char* section, const char* key_name, const char* key_value)
 {
 	printf_s("[%s]\n%s = %s\n\n", section, key_name, key_value);
 }
-
-void iniDataCallback2(const char* section, const char* key_name, const char* key_value)
+/******************************************************************************************************/
+void iniDataCallback2(void* userdata, const char* section, const char* key_name, const char* key_value)
 {
 	printf_s("%s\\%s is %s\n", section, key_name, key_value);
 }

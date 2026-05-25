@@ -6,7 +6,7 @@
 #include <string.h>
 #include <ctype.h>
 
-void ini_parseINIFromFile(const char* filePath, const char* logfilePath, ini_callback callback)
+void ini_parseINIFromFile(const char* filePath, const char* logfilePath, ini_callback callback, void* userdata)
 {
 	FILE* my_file = NULL;
 	fopen_s(&my_file, filePath, "rb");				// Mode specified to read-binary
@@ -27,7 +27,7 @@ void ini_parseINIFromFile(const char* filePath, const char* logfilePath, ini_cal
 			{
 				// Read success
 				fileContent[fileSize] = '\0';		// Insert the NULL terminator at the end of the buffer with the file content taken with fread()
-				ini_parseINI(fileContent, logfilePath, callback);
+				ini_parseINI(fileContent, logfilePath, callback, userdata);
 			}
 			free(fileContent);
 		}
@@ -37,7 +37,7 @@ void ini_parseINIFromFile(const char* filePath, const char* logfilePath, ini_cal
 }
 
 /****************************************************************************************************************************/
-void ini_parseINI(const char* iniData, const char* logfilePath, ini_callback callback)
+void ini_parseINI(const char* iniData, const char* logfilePath, ini_callback callback, void* userdata)
 {
 	// Handle a parser-log file here
 	FILE* my_parser_log = NULL;
@@ -186,7 +186,7 @@ void ini_parseINI(const char* iniData, const char* logfilePath, ini_callback cal
 				state = 0;
 
 				// Report the result, introduce callback, define report format out-side of the parser itself
-				callback(currentSection, currentKeyName, currentKeyValue);
+				callback(userdata, currentSection, currentKeyName, currentKeyValue);
 
 				if (my_parser_log)
 				{

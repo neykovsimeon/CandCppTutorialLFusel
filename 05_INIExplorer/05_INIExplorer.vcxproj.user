@@ -4,20 +4,20 @@
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>my_config.ini</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>my_config.ini 2</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommandArguments>my_config.ini</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>my_config.ini 2</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>my_config.ini</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>my_config.ini 2</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArgumentsHistory>my_config.ini my_ini_parser.log|my_config.ini 2|my_config.ini|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArgumentsHistory>my_config.ini my_ini_parser.log|my_config.ini|my_config.ini 2|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>my_config.ini</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>my_config.ini 2</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommandArgumentsHistory>my_config.ini|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
