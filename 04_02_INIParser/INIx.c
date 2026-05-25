@@ -1,19 +1,13 @@
 #include "INIx.h"
 
-inix_data* inix_parseINIFromFile(const char* filePath, const char* logfilePath)
+void inix_parseINIFromFile(inix_data* data, const char* filePath, const char* logfilePath)
 {
-    inix_data* data = inix_new();
-    ini_parseINIFromFile(filePath, logfilePath, inix_append_key_to_data, data);
-
-    return data;
+    ini_parseINIFromFile(filePath, logfilePath, inix_appendKeyToData, data);
 }
 
-inix_data* inix_parseINI(const char* iniData, const char* logfilePath)
+void inix_parseINI(inix_data* data, const char* iniData, const char* logfilePath)
 {
-    inix_data* data = inix_new();
-    ini_parseINI(iniData, logfilePath, inix_append_key_to_data, data);
-
-    return data;
+    ini_parseINI(iniData, logfilePath, inix_appendKeyToData, data);
 }
 
 void inix_close(inix_data* data)
@@ -23,29 +17,29 @@ void inix_close(inix_data* data)
         // TODO: Cleanup
         if (data->firstSection)
         {
-            inix_close_section(data->firstSection);
+            inix_closeSection(data->firstSection);
         }
         free(data);
     }
 
 }
 
-int inix_section_exists(inix_data* data, const char* name)
+int inix_sectionExists(inix_data* data, const char* name)
 {
     // boolean expresion works from left to right.
-    return data->firstSection && inix_get_section(data->firstSection, name);
+    return data->firstSection && inix_getSection(data->firstSection, name);
 }
 
-int inix_key_exists(inix_data* data, const char* in_section_name, const char* exist_key_name)
+int inix_keyExists(inix_data* data, const char* in_section_name, const char* exist_key_name)
 {
     if (data->firstSection)
     {
-        inix_section* section = inix_get_section(data->firstSection, in_section_name);
+        inix_section* section = inix_getSection(data->firstSection, in_section_name);
         if (section)                                                    // If section with the requested name has been found
         {
             if (section->firstKey)                                      // Check this section has keys/root/firstKey
             {
-                return 1 && inix_get_key(section->firstKey, exist_key_name); // Return 1 (true) if a key with the requested name exists
+                return 1 && inix_getKey(section->firstKey, exist_key_name); // Return 1 (true) if a key with the requested name exists
             }
         }
     }
@@ -57,10 +51,10 @@ const char* inix_get(inix_data* data, const char* in_section_name, const char* e
 {
     if (data->firstSection)
     {
-        inix_section* section = inix_get_section(data->firstSection, in_section_name);
+        inix_section* section = inix_getSection(data->firstSection, in_section_name);
         if (section && section->firstKey)
         {
-            inix_key* key = inix_get_key(section->firstKey, exist_key_name);
+            inix_key* key = inix_getKey(section->firstKey, exist_key_name);
             if (key)
             {
                 return key->key_value;
@@ -99,7 +93,7 @@ void inix_callback(inix_data* data, const char* section, const char* key_name, c
 
 }
 
-inix_key* inix_new_key(const char* new_key_name, const char* new_key_value)
+inix_key* inix_newKey(const char* new_key_name, const char* new_key_value)
 {
     inix_key* new_key = malloc(sizeof(inix_key));
     if (new_key)
@@ -112,7 +106,7 @@ inix_key* inix_new_key(const char* new_key_name, const char* new_key_value)
     return new_key;
 }
 
-inix_key* inix_get_key(inix_key* root, const char* get_key_name)
+inix_key* inix_getKey(inix_key* root, const char* get_key_name)
 {
     if (strcmp(root->key_name, get_key_name) == 0)
     {
@@ -120,29 +114,29 @@ inix_key* inix_get_key(inix_key* root, const char* get_key_name)
     }
     if (root->nextKey)
     {
-        return inix_get_key(root->nextKey, get_key_name);
+        return inix_getKey(root->nextKey, get_key_name);
     }
 
     return NULL; // by defult and when we didn't found the requested (get) key name
 }
 
-void inix_append_key(inix_key* root, const char* key_name, const char* key_value)
+void inix_appendKey(inix_key* root, const char* key_name, const char* key_value)
 {
     while (root->nextKey) // This will end-up at the end of the key's list.
     {
         root = root->nextKey;
     }
     // When we are at the end of the list - assign to its next key given name and value
-    root->nextKey = inix_new_key(key_name, key_value);
+    root->nextKey = inix_newKey(key_name, key_value);
 }
 
-void inix_close_key(inix_key* key)
+void inix_closeKey(inix_key* key)
 {
     if (key)
     {
         if (key->nextKey)
         {
-            inix_close_key(key->nextKey);
+            inix_closeKey(key->nextKey);
         }
         
         if(key->key_name) free(key->key_name);
@@ -152,7 +146,7 @@ void inix_close_key(inix_key* key)
     }
 }
 
-inix_section* inix_new_section(const char* name)
+inix_section* inix_newSection(const char* name)
 {
     inix_section* new_section = malloc(sizeof(inix_section));
     if (new_section)
@@ -166,18 +160,18 @@ inix_section* inix_new_section(const char* name)
     return new_section;
 }
 
-inix_section* inix_append_section(inix_section* root, const char* append_section_name)
+inix_section* inix_appendSection(inix_section* root, const char* append_section_name)
 {
     while (root->nextSection) // This will end-up at the end of the senctions' list.
     {
         root = root->nextSection;
     }
-    root->nextSection = inix_new_section(append_section_name);
+    root->nextSection = inix_newSection(append_section_name);
 
     return root->nextSection;
 }
 
-inix_section* inix_get_section(inix_section* root, const char* name)
+inix_section* inix_getSection(inix_section* root, const char* name)
 {
     // Check if section exists
     inix_section* foundSection = NULL;
@@ -192,43 +186,43 @@ inix_section* inix_get_section(inix_section* root, const char* name)
     return foundSection;
 }
 
-void inix_appen_key_to_section(inix_section* section, const char* append_key_name, const char* append_key_value)
+void inix_appendKeyToSection(inix_section* section, const char* append_key_name, const char* append_key_value)
 {
     if (section->firstKey) // if we already have keys list -> we append new one at the end
     {
-        inix_append_key(section->firstKey, append_key_name, append_key_value);
+        inix_appendKey(section->firstKey, append_key_name, append_key_value);
     }
     else // if we don't yet have any keys (firstKey = NULL), we create new key, it becomes the root/first key in this section
     {
-        section->firstKey = inix_new_key(append_key_name, append_key_value);
+        section->firstKey = inix_newKey(append_key_name, append_key_value);
     }
 }
 
-void inix_close_section(inix_section* section)
+void inix_closeSection(inix_section* section)
 {
     if (section)
     {
         if (section->nextSection)
         {
-            inix_close_section(section->nextSection);
+            inix_closeSection(section->nextSection);
         }
         if (section->firstKey)
         {
-            inix_close_key(section->firstKey);
+            inix_closeKey(section->firstKey);
         }
         if(section->section_name) free(section->section_name);
         free(section);
     }
 }
 
-inix_section* inix_ensure_section(inix_data* data, const char* name)
+inix_section* inix_ensureSection(inix_data* data, const char* name)
 {
     // Check if section exists
     //int sectionExists = 0; // false by defualt
     inix_section* foundSection = NULL;
     if (data->firstSection)
     {
-        foundSection = inix_get_section(data->firstSection, name);
+        foundSection = inix_getSection(data->firstSection, name);
     }
 
     // Insert section if not existed
@@ -236,26 +230,26 @@ inix_section* inix_ensure_section(inix_data* data, const char* name)
     {
         if (data->firstSection)
         {
-            foundSection = inix_append_section(data->firstSection, name);
+            foundSection = inix_appendSection(data->firstSection, name);
         }
         else
         {
             // valid assignment, works from right to left
-            foundSection = data->firstSection = inix_new_section(name);
+            foundSection = data->firstSection = inix_newSection(name);
         }
     }
 
     return foundSection;
 }
 
-void inix_append_key_to_data(inix_data* data, const char* section_name, const char* append_key_name, const char* append_key_value)
+void inix_appendKeyToData(inix_data* data, const char* section_name, const char* append_key_name, const char* append_key_value)
 {
-    inix_section* section = inix_ensure_section(data, section_name);
+    inix_section* section = inix_ensureSection(data, section_name);
     if (section)
     {
         if (section->firstKey)
         {
-            inix_key* key_found = inix_get_key(section->firstKey, append_key_name);
+            inix_key* key_found = inix_getKey(section->firstKey, append_key_name);
             if (key_found) // if existed  - we replace its value with the requested one
             {
                 if (key_found->key_value) free(key_found->key_value);
@@ -263,13 +257,13 @@ void inix_append_key_to_data(inix_data* data, const char* section_name, const ch
             }
             else // if not existed  - we append the requested one
             {
-                inix_append_key(section->firstKey, append_key_name, append_key_value);
+                inix_appendKey(section->firstKey, append_key_name, append_key_value);
             }
             
         }
         else
         {
-            section->firstKey = inix_new_key(append_key_name, append_key_value);
+            section->firstKey = inix_newKey(append_key_name, append_key_value);
         }
     }
 }

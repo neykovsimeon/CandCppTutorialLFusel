@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="my_config.ini" />
+    <None Include="my_default.ini" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">

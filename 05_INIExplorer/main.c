@@ -61,15 +61,17 @@ int main(int argc, char** argv)				// argc -> arguments count; argv -> arguments
 	}
 
 	// Parse the ini file
-	inix_data* iniData = inix_parseINIFromFile(argv[1], logfile); // Introduce function pointer
+	inix_data* iniData = inix_new();
 	if (iniData)
 	{
-		int found_owner		= inix_section_exists(iniData, "owner");
-		int found_database	= inix_section_exists(iniData, "database");
+		inix_parseINIFromFile(iniData, "my_default.ini", logfile);
+		inix_parseINIFromFile(iniData, argv[1], logfile);
+		int found_owner		= inix_sectionExists(iniData, "owner");
+		int found_database	= inix_sectionExists(iniData, "database");
 
-		int found_key_name		= inix_key_exists(iniData, "owner", "name");
-		int found_key_server	= inix_key_exists(iniData, "database", "server");
-		int found_key_port		= inix_key_exists(iniData, "database", "port");
+		int found_key_name		= inix_keyExists(iniData, "owner", "name");
+		int found_key_server	= inix_keyExists(iniData, "database", "server");
+		int found_key_port		= inix_keyExists(iniData, "database", "port");
 
 		const char* owner_name = inix_get(iniData, "owner", "name");
 		const char* database_server = inix_get(iniData, "database", "server");
