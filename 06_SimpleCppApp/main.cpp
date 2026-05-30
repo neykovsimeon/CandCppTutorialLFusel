@@ -10,6 +10,19 @@ class FunctionPreCasher
 {
 	
 	public:
+		
+		FunctionPreCasher() = default;
+		// Proper customer constructor introduced here.
+		FunctionPreCasher(int32_t x, uint32_t count, int32_t(*function)(int32_t)) 
+		{
+			Setup(x, count, function);
+		}
+		// Proper custom destructor introduced here.
+		~FunctionPreCasher() 
+		{
+			Release();
+		}
+
 		void Setup(int32_t x, uint32_t count, int32_t(*function)(int32_t))
 		{
 			if (!values) // not yet to concern the topic how to properly handle errors
@@ -35,7 +48,6 @@ class FunctionPreCasher
 						values[i - 1] = function(i * x); 
 					}
 				}
-
 			}
 		}
 		void Release()
@@ -59,8 +71,7 @@ class FunctionPreCasher
 		int32_t* values = nullptr;
 		int32_t x = 0;
 		int32_t count = 0;
-		int32_t(*function)(int32_t x) = nullptr;
-		
+		int32_t(*function)(int32_t x) = nullptr;	
 };
 
 int main()
@@ -73,10 +84,17 @@ int main()
 	std::cout << "Enter the itterations: ";
 	std::cin >> count;
 
-	FunctionPreCasher pc;
-	pc.Setup(x, count, &f);
+	FunctionPreCasher pc(x, count, &f);
+	// Another variant how to call it:
+	//FunctionPreCasher pc = FunctionPreCasher(x, count, &f);(x, count, &f);
 	pc.Compute();
 	pc.PrintResult();
-	pc.Release();
+
+	// Variant how to use it as a pointer (heap usage). Include explicit delete fpc!
+	FunctionPreCasher* fpc = new FunctionPreCasher(x, count * 2, &f);
+	fpc->Compute();
+	fpc->PrintResult();
+	delete fpc;
+
 	return 0;
 }
