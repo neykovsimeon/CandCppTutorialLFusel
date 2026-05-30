@@ -12,6 +12,9 @@ class FunctionPreCasher
 	public:
 		
 		FunctionPreCasher() = default;
+		// Constructor to create new object as a copy from another object: 
+		// with delete we disable the to pass as a copy of an object, but ask for passing by reference
+		FunctionPreCasher(const FunctionPreCasher& another) = delete;
 		// Proper customer constructor introduced here.
 		FunctionPreCasher(int32_t x, uint32_t count, int32_t(*function)(int32_t)) 
 		{
@@ -22,6 +25,9 @@ class FunctionPreCasher
 		{
 			Release();
 		}
+
+		// this way we disable the use of "=" operator with FunctionPreCasher ojects
+		FunctionPreCasher& operator=(const FunctionPreCasher& another) = delete;
 
 		void Setup(int32_t x, uint32_t count, int32_t(*function)(int32_t))
 		{
@@ -43,7 +49,7 @@ class FunctionPreCasher
 			{
 				if (values)
 				{
-					for (uint32_t i = 1; i <= count; i++)
+					for (int32_t i = 1; i <= count; i++)
 					{
 						values[i - 1] = function(i * x); 
 					}
@@ -61,7 +67,7 @@ class FunctionPreCasher
 		void PrintResult() const
 		{
 			if(values)
-				for (uint32_t i = 1; i <= count; i++)
+				for (int32_t i = 1; i <= count; i++)
 				{
 					std::cout << "f(" << i * x << ") = " << values[i - 1] << std::endl;
 				}
@@ -92,6 +98,11 @@ int main()
 	FunctionPreCasher pc(x, count, &f);
 	pc.Compute();
 	PrintPreCasher(pc);
+
+	FunctionPreCasher spc(10, 3, &f);
+	spc.Compute();
+
+	spc = pc;
 
 	return 0;
 }
