@@ -58,7 +58,7 @@ class FunctionPreCasher
 				values = nullptr;
 			}
 		}
-		void PrintResult()
+		void PrintResult() const
 		{
 			if(values)
 				for (uint32_t i = 1; i <= count; i++)
@@ -74,18 +74,14 @@ class FunctionPreCasher
 		int32_t(*function)(int32_t x) = nullptr;	
 };
 
-void PrintPreCasher(FunctionPreCasher* pc)
+void PrintPreCasher(const FunctionPreCasher& pc)
 {
-	if (pc)
-	{
-		std::cout << "Here comes the PreCasher: " << std::endl;
-		pc->PrintResult();
-	}
+	std::cout << "Printing with: " << &pc << std::endl;
+	pc.PrintResult();
 }
 
 int main()
 {
-
 	int32_t x;
 	uint32_t count;
 	std::cout << "Enter the starting value: ";
@@ -94,11 +90,8 @@ int main()
 	std::cin >> count;
 
 	FunctionPreCasher pc(x, count, &f);
-	// Another variant how to call it:
-	//FunctionPreCasher pc = FunctionPreCasher(x, count, &f);(x, count, &f);
 	pc.Compute();
-	//pc.PrintResult();
-	PrintPreCasher(&pc);
+	PrintPreCasher(pc);
 
 	return 0;
 }
