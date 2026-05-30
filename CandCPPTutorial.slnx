@@ -14,5 +14,6 @@
   <Project Path="05_INIExplorer/05_INIExplorer.vcxproj" Id="87af7275-ada6-4208-bd40-8cdf85af1508">
     <BuildDependency Project="04_02_INIParser/04_02_INIParser.vcxproj" />
   </Project>
+  <Project Path="06_SimpleCppApp/06_SimpleCppApp.vcxproj" Id="1788fff3-ce18-4dd7-be33-90e6efdcec31" />
   <Project Path="Exercises/E01_Functions/E01_Functions.vcxproj" Id="07a13779-8c95-436e-a844-22502edbf55b" />
 </Solution>
