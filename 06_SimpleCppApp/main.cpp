@@ -74,6 +74,15 @@ class FunctionPreCasher
 		int32_t(*function)(int32_t x) = nullptr;	
 };
 
+void PrintPreCasher(FunctionPreCasher* pc)
+{
+	if (pc)
+	{
+		std::cout << "Here comes the PreCasher: " << std::endl;
+		pc->PrintResult();
+	}
+}
+
 int main()
 {
 
@@ -88,13 +97,8 @@ int main()
 	// Another variant how to call it:
 	//FunctionPreCasher pc = FunctionPreCasher(x, count, &f);(x, count, &f);
 	pc.Compute();
-	pc.PrintResult();
-
-	// Variant how to use it as a pointer (heap usage). Include explicit delete fpc!
-	FunctionPreCasher* fpc = new FunctionPreCasher(x, count * 2, &f);
-	fpc->Compute();
-	fpc->PrintResult();
-	delete fpc;
+	//pc.PrintResult();
+	PrintPreCasher(&pc);
 
 	return 0;
 }
