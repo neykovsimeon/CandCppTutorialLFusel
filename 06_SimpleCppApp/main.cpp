@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 #include <cstdint>
 #include <cstring>
 #include <cstdlib>
@@ -24,6 +25,10 @@ class FunctionPreCacher
 				{
 					std::cout << "Allocate values with <<COPY>> from " << another.values << " to " << this->values << std::endl;
 					std::memcpy(values, another.values, sizeof(int32_t) * another.count);
+				}
+				else
+				{
+					throw std::runtime_error("FunctionPreCacher copy: not sufficient new values allocated");
 				}
 			}
 		}
@@ -89,6 +94,10 @@ class FunctionPreCacher
 						values[i - 1] = function(i * x); 
 					}
 				}
+				else
+				{
+					throw std::runtime_error("FunctionPreCacher: not sufficient new values allocated");
+				}
 			}
 
 			return *this;
@@ -105,22 +114,26 @@ class FunctionPreCacher
 		}
 		void PrintResult(std::ostream& os = std::cout) const
 		{
-			if(values)
+			if (values)
+			{
 				for (int32_t i = 1; i <= count; i++)
 				{
 					os << "f(" << i * x << ") = " << values[i - 1] << std::endl;
 				}
-			os << std::endl;
+				os << std::endl;
+			}
+
 		}
 
 		// Retrieve the computed value At index. Not yet validity check implemented
 		int32_t At(uint32_t index) const
 		{
-			// TODO check the range
+			if (index >= count)
+				throw std::range_error("FunctionPreChacher index out of range!");
 			return values[index];
 		}
 		// Retrieve the size of the array "values"
-		uint32_t Size() const
+		uint32_t Size() const noexcept
 		{
 			return count;
 		}
@@ -175,27 +188,29 @@ class PreCacherContainer
 
 		void Append(const FunctionPreCacher& pc)
 		{
-			if (m_usage < 8)
-			{
-				m_preCachers[m_usage++] = pc; // m_usage would be frist taken with its old value, then assignment, then m_usage increment
-			}
+			if (m_usage >= 8)
+				throw std::overflow_error("PreCacherContainer overflown!");
+			m_preCachers[m_usage++] = pc; // m_usage would be frist taken with its old value, then assignment, then m_usage increment
 		}	
 		void Append(FunctionPreCacher&& pc)
 		{
-			if (m_usage < 8)
-			{
-				m_preCachers[m_usage++] = std::move(pc); // m_usage would be first taken with its old value, then assignment, then m_usage increment
-			}
+			if (m_usage >= 8)
+				throw std::overflow_error("PreCacherContainer overflown!");
+			m_preCachers[m_usage++] = std::move(pc); // m_usage would be first taken with its old value, then assignment, then m_usage increment
 		}
 		const FunctionPreCacher& At(int index) const
 		{
+			if (index >= 8 || index < 0) 
+				throw std::range_error("PreCaherContainer index out of range!");
 			return m_preCachers[index];
 		}
 		FunctionPreCacher& At(int index)
 		{
+			if (index >= 8 || index < 0)
+				throw std::range_error("PreCaherContainer index out of range!");
 			return m_preCachers[index];
 		}
-		int Size() const
+		int Size() const noexcept
 		{
 			return m_usage;
 		}
@@ -230,8 +245,13 @@ std::ostream& operator<<(std::ostream& os, const PreCacherContainer& pc)
 	pc.PrintResult(os);
 	return os;
 }
+std::ostream& operator<<(std::ostream& os, const FunctionPreCacher& pc)
+{
+	pc.PrintResult(os);
+	return os;
+}
 
-int main()
+int SaveMain()
 {
 	int32_t x;
 	uint32_t count;
@@ -249,19 +269,32 @@ int main()
 		<< std::move(FunctionPreCacher()(x, (count * 2), &f))				 // 2, use it with operator function call Compute() overloaded
 		<< std::move(FunctionPreCacher((x * 2), (count * 2), &f).Compute())	 // 3,
 		<< std::move(FunctionPreCacher((x * 3), (count * 3), &f));			 // 4, Remove the computation. Used to demonstrate the use for bool() overloaded
-	//cnt.PrintResult();
-	// 
-	//cnt[1].PrintResult();
-	//cnt[3].PrintResult();
-	//for (uint32_t i = 0; i < cnt[0].Size(); i++)
-	//{
-	//	std::cout << "From me: " << cnt[0][i] << std::endl;
-	//}
-	std::cout << "Index 0: " << (bool)cnt[0] << std::endl;
-	std::cout << "Index 4: " << (bool)cnt[4] << std::endl;
+	
+	cnt[3].PrintResult();
 
-	// The use of std::cout (ostream)
 	std::cout << cnt;
 
 	return 0;
 }
+
+int main()  noexcept
+{
+	try
+	{
+		return SaveMain();
+	}
+	catch (const std::exception& ex)
+	{
+		std::cout << "Exception occured: " << ex.what() << std::endl;
+	}
+	catch (...)
+	{
+		std::cout << "Unknowns exception occured! " << std::endl;
+	}
+
+	return -1;
+
+
+}
+
+
