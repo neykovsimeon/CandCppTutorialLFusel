@@ -1,4 +1,5 @@
 #pragma once
+
 #include "FunctionPreCacher.hpp"
 
 #include <iostream>
@@ -6,6 +7,7 @@
 
 namespace SimpleCppApp
 {
+	template<typename T>
 	class PreCacherContainer
 	{
 		public:
@@ -18,69 +20,70 @@ namespace SimpleCppApp
 			PreCacherContainer& operator=(PreCacherContainer&&) noexcept = default;			// Default "move" assign operator overload - The Big five concept
 
 			void PrintResult(std::ostream& os = std::cout) const
-		{
-			os << "Container at " << this << std::endl;
-			for (int i = 0; i < m_usage; i++)
 			{
-				os << "FunctionPreCacher #" << (i + 1) << std::endl;
-				os << m_preCachers[i];	// m_preCachers[i].PrintResult(os);
+				os << "Container at " << this << std::endl;
+				for (int i = 0; i < m_usage; i++)
+				{
+					os << "FunctionPreCacher #" << (i + 1) << std::endl;
+					os << m_preCachers[i];	// m_preCachers[i].PrintResult(os);
+				}
 			}
-		}
-			void Append(const FunctionPreCacher& pc)
-		{
-			if (m_usage >= 8)
-				throw std::overflow_error("PreCacherContainer overflown!");
-			m_preCachers[m_usage++] = pc; // m_usage would be frist taken with its old value, then assignment, then m_usage increment
-		}
-			void Append(FunctionPreCacher&& pc)
-		{
-			if (m_usage >= 8)
-				throw std::overflow_error("PreCacherContainer overflown!");
-			m_preCachers[m_usage++] = std::move(pc); // m_usage would be first taken with its old value, then assignment, then m_usage increment
-		}
-			const FunctionPreCacher& At(int index) const
-		{
-			if (index >= 8 || index < 0)
-				throw std::range_error("PreCaherContainer index out of range!");
-			return m_preCachers[index];
-		}
-			FunctionPreCacher& At(int index)
-		{
-			if (index >= 8 || index < 0)
-				throw std::range_error("PreCaherContainer index out of range!");
-			return m_preCachers[index];
-		}
+			void Append(const FunctionPreCacher<T>& pc) // tytpename
+			{
+				if (m_usage >= 8)
+					throw std::overflow_error("PreCacherContainer overflown!");
+				m_preCachers[m_usage++] = pc; // m_usage would be frist taken with its old value, then assignment, then m_usage increment
+			}
+			void Append(FunctionPreCacher<T>&& pc) // typename
+			{
+				if (m_usage >= 8)
+					throw std::overflow_error("PreCacherContainer overflown!");
+				m_preCachers[m_usage++] = std::move(pc); // m_usage would be first taken with its old value, then assignment, then m_usage increment
+			}
+			const FunctionPreCacher<T>& At(int index) const
+			{
+				if (index >= 8 || index < 0)
+					throw std::range_error("PreCaherContainer index out of range!");
+				return m_preCachers[index];
+			}
+			FunctionPreCacher<T>& At(int index)
+			{
+				if (index >= 8 || index < 0)
+					throw std::range_error("PreCaherContainer index out of range!");
+				return m_preCachers[index];
+			}
 			int Size() const noexcept
-		{
-			return m_usage;
-		}
+			{
+				return m_usage;
+			}
 
-			PreCacherContainer& operator<<(const FunctionPreCacher& pc)
-		{
-			Append(pc);
-			return *this;
-		}
-			PreCacherContainer& operator<<(FunctionPreCacher&& pc)
-		{
-			Append(std::move(pc));
-			return *this;
-		}
-			const FunctionPreCacher& operator[](int index) const
-		{
-			return At(index);
-		}
-			FunctionPreCacher& operator[](int index)
-		{
-			return At(index);
-		}
+			PreCacherContainer& operator<<(const FunctionPreCacher<T>& pc) // typename
+			{
+				Append(pc);
+				return *this;
+			}
+			PreCacherContainer& operator<<(FunctionPreCacher<T>&& pc) // typename
+			{
+				Append(std::move(pc));
+				return *this;
+			}
+			const FunctionPreCacher<T>& operator[](int index) const // typename
+			{
+				return At(index);
+			}
+			FunctionPreCacher<T>& operator[](int index) // typename
+			{
+				return At(index);
+			}
 
 		private:
-			FunctionPreCacher m_preCachers[8];
+			FunctionPreCacher<T> m_preCachers[8];
 			int m_usage = 0;
 	};
 }
 
-inline  std::ostream& operator<<(std::ostream& os, const SimpleCppApp::PreCacherContainer& pc)
+template<typename T>
+inline  std::ostream& operator<<(std::ostream& os, const SimpleCppApp::PreCacherContainer<T>& pc)
 {
 	pc.PrintResult(os);
 	return os;
