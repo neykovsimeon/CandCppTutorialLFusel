@@ -1,4 +1,3 @@
-#include "Pet.hpp"
 #include "Cat.hpp"
 #include "Dog.hpp"
 
@@ -10,17 +9,16 @@ int main()
 
 	Dog bruno("Bruno");
 	Cat pifka("Pifka");
-	Pet oscar("Oscar");
+	Cat oscar("Oscar");
 
-	//Pet* pt = new Cat("Pifa"); 
-	//delete pt; // Ensure both parrent and chaild destructurs are called: make the parrent destructor virtual
+	ToyBone bone;
+	ToyMouse mouse;
 
-	//Pet* op = &oscar;
-	//Cat* cbCat = dynamic_cast<Cat*>(op); // will return nulptr
-	//Dog* cbDog = dynamic_cast<Dog*>(op); // will return normal pointer
+	std::cout << "Playing with our pets:...." << std::endl;
+	std::cout << bruno.GetName() << " gets the bone: "	<< bruno.Interact(bone)	 << std::endl;
+	std::cout << pifka.GetName() << " gets the mouse: " << pifka.Interact(mouse) << std::endl;
+	std::cout << oscar.GetName() << " gets the bone: "	<< oscar.Interact(bone)  << std::endl;
 	
-	bruno.Lived(); oscar.Lived();
-	bruno.Lived(); oscar.Lived();
 	bruno.Lived(); oscar.Lived();
 	bruno.Lived(); oscar.Lived();
 	pifka.Lived(); pifka.Lived();

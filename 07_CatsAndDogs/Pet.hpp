@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Toy.hpp"
+#include "IInteractable.hpp"
+
 #include <iostream>
 #include <ostream>
 #include <string>
@@ -11,13 +14,11 @@ namespace PetManager
 	class Pet
 	{
 		public:
+			using ToyInteractable = IInteractable<std::string, Toy&>;  // Using an alias	
+		public:
 			Pet() = default;
 			Pet(const std::string_view& name);
 			virtual ~Pet() = default;
-			//{
-			//	std::cout << "Destroying a pet...\n";
-			//}	// "virtual" supports to call the destructor when chaild class is created as a pointer, 
-			//	// like: Pet* pt = new Cat("Pifa");
 
 			void Lived();
 			void Died();
@@ -25,8 +26,7 @@ namespace PetManager
 			virtual std::string_view GetKind() const noexcept
 			{
 				return "Pet";
-			} // child classes have to implement the function for themselves
-
+			} 
 			inline const std::string& GetName() const noexcept
 			{
 				return m_name;
