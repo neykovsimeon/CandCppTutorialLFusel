@@ -15,29 +15,49 @@ int main()
 	Dog rex("Rex");
 	Cat pisan("Pisan");
 
-	LinkedPetsList<PetManager::Pet*> lpl;
-	lpl.Append(&bruno);
-	lpl.Append(&pifka);
-	lpl.Append(&oscar);
-	lpl.Append(&rex);
-	lpl.Append(&pisan);
+	LinkedPetsList<Pet*> pets;;
+	pets.Append(&bruno);
+	pets.Append(&pifka);
+	pets.Append(&oscar);
+	pets.Append(&rex);
+	pets.Append(&pisan);
 
-	for (size_t i = 0; i < lpl.Count(); i++)
+	LinkedPetsList<Pet*> second = pets;				// Example operator '=' overloaded
+	LinkedPetsList<Pet*> third(pets);				// Example copy constructor: new is third, old stays active: pets
+	LinkedPetsList<Pet*> moved(std::move(pets));	// Example move constructor: new is moved, pets becomes empty
+
+	//for (auto it = pets.begin(); !(it == pets.end()); it++)
+	//{
+	//	std::cout << "Pets before erase: " << *it.Data() << std::endl;
+	//}
+	//std::cout << std::endl;
+
+	//for (auto it = pets.begin(); !(it == pets.end()); it++)
+	//{
+	//	std::cout << "Pets before erase: " << **it << std::endl; 
+	//}	// Only < *it >  will print tjust addresses. Double de-referenciation < **it > gives the Data
+	//std::cout << std::endl;
+
+	// Exampke intro to the range loop:
+	//int x[8] = { 2, 4, 6, 8, 10, 12, 14, 16 };
+	//for (int i = 0; i < 8; i++) std::cout << "A) " << x[i] << std::endl;
+	//for (int i : x)				std::cout << "B) " <<	i  << std::endl;
+	for (const Pet* pet : moved)
 	{
-		std::cout << (i + 1) << ". pet before erase: " << *lpl[i] << std::endl;
+		std::cout << "Pets before erase: " << *pet << std::endl;
 	}
 	std::cout << std::endl;
 
-	lpl.Erase(2);
-	for (size_t i = 0; i < lpl.Count(); i++)
+	moved.Erase(2);
+	for (const Pet* pet : moved)
 	{
-		std::cout << (i + 1) << ". pet after erase: " << *lpl[i] << std::endl;
+		std::cout << "Pets after erase: " << *pet << std::endl;
 	}
 	std::cout << std::endl;
 
-	std::cout << "First Pet: "  << *lpl.At(0) << std::endl;
-	std::cout << "Second Pet: " << *lpl.At(1) << std::endl;
-	std::cout << "Third Pet: "  << *lpl.At(2) << std::endl << std::endl;
+	std::cout << "First Pet: "  << *pets.At(0) << std::endl;
+	std::cout << "Second Pet: " << *pets.At(1) << std::endl;
+	std::cout << "Third Pet: "  << *pets.At(2) << std::endl << std::endl;
 
 	ToyBone bone;
 	ToyMouse mouse;
@@ -49,8 +69,6 @@ int main()
 	
 	bruno.Lived(); oscar.Lived();
 	bruno.Lived(); oscar.Lived();
-	pifka.Lived(); pifka.Lived();
-	pifka.Lived(); pifka.Lived();
 	pifka.Lived(); pifka.Lived();
 	pifka.Lived(); pifka.Lived();
 	bruno.Died();
