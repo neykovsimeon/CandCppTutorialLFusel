@@ -166,6 +166,7 @@
     <ClInclude Include="Cat.hpp" />
     <ClInclude Include="Dog.hpp" />
     <ClInclude Include="IInteractable.hpp" />
+    <ClInclude Include="LinkedPetsList.hpp" />
     <ClInclude Include="Pet.hpp" />
     <ClInclude Include="Toy.hpp" />
   </ItemGroup>
