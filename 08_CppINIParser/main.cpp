@@ -2,36 +2,22 @@
 
 #include <iostream>
 
-class MyFancySettingsProvider
-{
-	public:
-		MyFancySettingsProvider(std::ostream& os):
-			m_os(os)
-		{ }
-
-		void KichOff(const std::filesystem::path& configFile = "./my_config.ini")
-		{
-			INIpp::SAXParser parser(
-				std::bind(&MyFancySettingsProvider::OnKeyVauePair, this, 
-				std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-
-			parser.AddFile(configFile);
-		}
-
-	private:
-		void OnKeyVauePair(const std::string& section, const std::string& key, const std::string& value)
-		{
-			m_os << section << " -> " << key << " = " << value << ";" << std::endl;
-		}
-
-	private:
-		std::ostream& m_os;
-};
-
 int main()
 {
-	MyFancySettingsProvider sp(std::cout);
-	sp.KichOff();
+	using namespace INIpp;
+
+	DOM::Section section("MyDummySection");
+	section.Append("key1", DOM::KeyValuePair("name", "Petko"));
+	section.Append("key2", DOM::KeyValuePair("workplace", "Organizatsiya na Chodovishtata i Zlodeite"));
+	section.Append("key3", DOM::KeyValuePair("homeplace", "13, Mecho Rukspin street, Montana State"));
+
+
+	std::cout << "\n-------- K/V of " << section.SectionName() << " -------" << std::endl;
+	for (auto& key : section.Keys())
+	{
+		std::cout << key << ": " << section[key].KeyName() << " = " << section[key].KeyValue() << std::endl;
+	}
+
 	std::cout << "\nHello World! INI Cpp Parser..." << std::endl;
 
 	return 0;

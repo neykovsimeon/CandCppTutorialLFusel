@@ -179,7 +179,7 @@ void INIpp::Parser::ProcessChar(char c)
 			break;
 	}
 }
-
+//**********************************************************************************************************************
 void INIpp::Parser::RemoveTrailingWhitespace(std::string& str) // AI - generated !!!
 {
 	// 1. Drop the explicit C-style null terminator if it exists at the end
@@ -197,7 +197,7 @@ void INIpp::Parser::RemoveTrailingWhitespace(std::string& str) // AI - generated
 		str.erase(end + 1); // 3. Wipe out all trailing whitespace instantly
 	}
 }
-
+//**********************************************************************************************************************
 void INIpp::SAXParser::ParseKeyValuePair(const std::string& section, const std::string& key, const std::string& value)
 {
 	if (m_callback)

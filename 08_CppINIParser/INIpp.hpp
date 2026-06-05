@@ -3,15 +3,96 @@
 #include <string>
 #include <format>
 #include <cctype>
+#include <vector>
 #include <fstream>
 #include <stdexcept>
 #include <functional>
 #include <string_view>
 #include <filesystem>
-
+//#include <map>	// TODO: Review: Contains the items in the order they have been inserted
+#include <unordered_map>
 
 namespace INIpp
 {
+	namespace DOM // Document Object's Model
+	{
+		class KeyValuePair
+		{
+			public:
+				// Constructors
+				KeyValuePair() = default;
+				KeyValuePair(const std::string_view& key, const std::string_view& value):
+					m_key(key), m_value(value)
+				{ }
+
+				inline const std::string& KeyName() const noexcept
+				{
+					return m_key;
+				}
+				inline const std::string& KeyValue() const noexcept
+				{
+					return m_value;
+				}
+
+			private:
+			// strings
+				std::string m_key;
+				std::string m_value;
+		};
+
+		class Section
+		{
+			public:
+				using Key = std::string;
+				
+				Section() = default;
+				Section(const std::string_view& name):
+					m_sectionName(name)
+				{ }
+
+				inline const std::string& SectionName() const noexcept
+				{
+					return m_sectionName;
+				}
+				inline KeyValuePair& operator[](const Key& key)
+				{
+					return m_KeyValuePairs.find(key)->second;
+				}
+				inline const KeyValuePair& operator[](const Key& key) const
+				{
+					return m_KeyValuePairs.find(key)->second;
+				}
+
+				std::vector<Key> Keys() const
+				{
+					std::vector<Key> keys;
+					for (auto it = m_KeyValuePairs.begin(); it != m_KeyValuePairs.end(); ++it)
+					{
+						keys.push_back(it->first);
+					}
+					return keys;
+				}
+
+				void Append(const Key& key, KeyValuePair&& /* &&-> move semantic */ value)
+				{
+					m_KeyValuePairs.emplace(key, std::move(value));
+				}
+
+			private:
+				// Will have multiple KeyValue pairs: Section -1-(key)-n-> KeyValuePairs
+				std::string m_sectionName;
+				std::unordered_map<Key, KeyValuePair> m_KeyValuePairs;
+		};
+
+		class Document
+		{
+			
+			private:
+				// Will have multiple sections: Document -1-(name) -n->Sections
+		};
+	}
+
+
 	class Exception : public std::runtime_error
 	{
 		public:
