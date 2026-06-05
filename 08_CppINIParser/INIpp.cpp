@@ -205,3 +205,10 @@ void INIpp::SAXParser::ParseKeyValuePair(const std::string& section, const std::
 		m_callback(section, key, value);
 	}
 }
+//**********************************************************************************************************************
+void INIpp::DOMParser::ParseKeyValuePair(const std::string& section, const std::string& key, const std::string& value)
+{
+	m_document[section].Append(DOM::KeyValuePair(key, value));
+}
+
+

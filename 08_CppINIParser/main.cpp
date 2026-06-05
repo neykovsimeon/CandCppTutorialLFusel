@@ -4,21 +4,20 @@
 
 int main()
 {
-	using namespace INIpp;
+	std::cout << "Hello World! INI Cpp Parser...\n" << std::endl;
 
-	DOM::Section section("MyDummySection");
-	section.Append("key1", DOM::KeyValuePair("name", "Petko"));
-	section.Append("key2", DOM::KeyValuePair("workplace", "Organizatsiya na Chodovishtata i Zlodeite"));
-	section.Append("key3", DOM::KeyValuePair("homeplace", "13, Mecho Rukspin street, Montana State"));
+	INIpp::DOMParser parser;
+	parser.AddFile("./my_config.ini");
 
+	INIpp::DOM::Document doc = parser.Get();
 
-	std::cout << "\n-------- K/V of " << section.SectionName() << " -------" << std::endl;
-	for (auto& key : section.Keys())
-	{
-		std::cout << key << ": " << section[key].KeyName() << " = " << section[key].KeyValue() << std::endl;
-	}
+	std::cout << "database/server IP: " << doc["database"]["server"].KeyValue() << ";" << std::endl;
 
-	std::cout << "\nHello World! INI Cpp Parser..." << std::endl;
+	int port = doc["database"]["port"].Get<int>();
+	std::cout << "database/port <int>: " << port << ";" << std::endl;
+
+	std::string owner = doc["owner"]["name"].Get<std::string>();
+	std::cout << "owner/name <string>: " << owner << ";" << std::endl;
 
 	return 0;
 }

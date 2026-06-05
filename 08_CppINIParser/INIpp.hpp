@@ -4,6 +4,7 @@
 #include <format>
 #include <cctype>
 #include <vector>
+#include <sstream>
 #include <fstream>
 #include <stdexcept>
 #include <functional>
@@ -33,6 +34,25 @@ namespace INIpp
 				{
 					return m_value;
 				}
+
+				// Convertion between string and other types (int for example)
+				// Pay attention not to use Get() to return string using stringstream, because the space breaks the stream
+				template<typename T>
+				T Get(const T& defaultValue = T())
+				{
+					T temp = defaultValue;
+					std::stringstream ss;
+					ss << m_value;
+					ss >> temp;
+					return temp;
+				}
+				// A solution to use Get() with strings, but not using stringstream
+				template<>
+				std::string Get(const std::string& defaultValue)
+				{
+					return m_value;
+				}
+
 
 			private:
 			// strings
@@ -66,16 +86,21 @@ namespace INIpp
 				std::vector<Key> Keys() const
 				{
 					std::vector<Key> keys;
-					for (auto it = m_KeyValuePairs.begin(); it != m_KeyValuePairs.end(); ++it)
+					for (auto& pair : m_KeyValuePairs)
 					{
-						keys.push_back(it->first);
+						keys.push_back(pair.first);
 					}
 					return keys;
 				}
 
-				void Append(const Key& key, KeyValuePair&& /* &&-> move semantic */ value)
+				// Old Append implementation
+				//void Append(const Key& key, KeyValuePair&& /* &&-> move semantic */ value)
+				//{
+				//	m_KeyValuePairs.emplace(key, std::move(value));
+				//}
+				void Append(KeyValuePair&& /* &&-> move semantic */ value)
 				{
-					m_KeyValuePairs.emplace(key, std::move(value));
+					m_KeyValuePairs.emplace(value.KeyName(), std::move(value));
 				}
 
 			private:
@@ -86,12 +111,56 @@ namespace INIpp
 
 		class Document
 		{
-			
+			public:
+				using Key = std::string;
+
+				inline Section& operator[](const Key& sectionName)
+				{
+					// In case section doesn't exist we want to create it "on the fly"
+					// TODO review: What happens if in the INI file more [section] with the same name exist?
+					// Is the "next" supposed to overwrite the previous? Or can they be merged? What's the INI spec?
+					// 1. Try to find: If exists - return it. Needed when a section has multiple keys
+					auto it = m_sections.find(sectionName);
+					if (it != m_sections.end())
+					{
+						return it->second;
+					}
+					// 2. It doesn't exists: Create new section to start with.
+					else
+					{
+						auto& section = m_sections[sectionName];	// Here we create new (empty) section with the asked name
+						section = std::move(Section(sectionName));	// Here we move the section's data
+						return section;
+					}
+				}
+				inline const Section& operator[](const Key& sectionName) const
+				{
+					// While this is const version -> we just return. It should exist!
+					return m_sections.find(sectionName)->second;
+				}
+
+				std::vector<Key> Sections() const
+				{
+					std::vector<Key> sections;
+					// Variant 1:
+					//for (auto it = m_sections.begin(); it != m_sections.end(); ++it)
+					//{
+					//	sections.push_back(it->first);
+					//}
+					// Variant 2:
+					for (auto& section : m_sections)
+					{
+						sections.push_back(section.first);
+					}
+
+					return sections;
+				}
+
 			private:
 				// Will have multiple sections: Document -1-(name) -n->Sections
+				std::unordered_map<Key, Section> m_sections;
 		};
 	}
-
 
 	class Exception : public std::runtime_error
 	{
@@ -151,11 +220,16 @@ namespace INIpp
 
 	class DOMParser : public Parser
 	{
-	public:
-		void ParseKeyValuePair(const std::string& section, const std::string& key, const std::string& value) override;
+		public:
+			void ParseKeyValuePair(const std::string& section, const std::string& key, const std::string& value) override;
 
-	private:
+			inline DOM::Document& Get()
+			{
+				return m_document;
+			}
 
+		private:
+			DOM::Document m_document;
 	};
 
 
