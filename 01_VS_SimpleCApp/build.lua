@@ -1,0 +1,1 @@
+cpptNewProject("01_VS_SimpleCApp")
