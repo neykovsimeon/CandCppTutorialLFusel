@@ -1,20 +1,11 @@
 # Exclude visual studio directory
 /.vs
 
-# Exclude Visual Studio build directory
-/build
-/x64
-/x86
-/Exercises/E01_Functions/x64
-/Exercises/E01_Functions/x86
 **.slnx
 **..vcxproj
 **..vcxproj.user
 **..vcxproj.filters
 
-# Ignore all visual studio code structured intermittent and binary files
-*.exe
-*.obj
+# Exclude Visual Studio build directory
+/build
 
-# Ignore not project relevant files
-*.png
